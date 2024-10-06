@@ -40,8 +40,8 @@ const loadCategories = () =>
             <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender}</p>
             <p class="text-gray-600 text-sm mb-2">Price: $${pet.price || "Not Available"}</p>
             <div class="flex justify-around">
-              <button id="" class=" like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
-              <button class="text-sec-btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
+              <button id="" class="like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
+              <button onclick= "adoptPet('${pet.petId}', this)" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
               <button onclick="loadDetails('${pet.petId}')" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Details</button>
             </div>
           </div>`;
@@ -88,7 +88,7 @@ const displayDetails = (petData) => {
 
     detailsContainer.innerHTML = `
 
-          <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 ease-out w-full h-full">
+          <div class="bg-white rounded-lg p-6 hover: transition duration-300 ease-out w-full h-full">
             <img src="${petData.image}" alt="${petData.pet_name}" class="h-[150px] rounded-lg mb-2 ml-0 lg:ml-20">
             <h3 class="text-xl font-bold mb-2 "> ${petData.pet_name}</h3>
             <div class="grid grid-cols-2">
@@ -112,6 +112,33 @@ const displayDetails = (petData) => {
     `
 }
 
+const adoptPet = (petId, button) => {
+    
+    const adoptContent = document.querySelector(".adopt-content");
+    adoptContent.innerHTML = `<div class="bg-white rounded-lg p-6  w-full h-full">
+    <i class="fa-regular fa-handshake"></i>
+    <p>Congratulations!</p><p>Adoption Process is start For your pet.</p><div id="countdown"></div></div>
+    `
+    const adoptModal = document.getElementById("adoptModal");
+    adoptModal.showModal();
+
+    let countdown = 3; 
+    const countdownDiv = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+        countdownDiv.innerHTML = countdown;
+        countdown--;
+
+        
+        if (countdown < 0) {
+            clearInterval(interval);
+            button.textContent = "Adopted"; 
+            setTimeout(() => {
+                adoptModal.close();
+            });
+        }
+    }, 1000);
+};
   
   loadCategories();
   const loadPetsByCategory = (category) => {
@@ -153,12 +180,16 @@ const showPetsByCategory = (pets) => {
             <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender}</p>
             <p class="text-gray-600 text-sm mb-2">Price: $${pet.price || "Not Available"}</p>
             <div class="flex justify-around">
-              <button id="Like-btn" class="bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
-              <button class="text-sec-btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
-              <button class="text-sec-btn bg-gray-200 px-4 py-2 rounded-md">Details</button>
+              <button id="" class="like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
+              <button onclick= "adoptPet('${pet.petId}', this)" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
+             <button onclick="loadDetails('${pet.petId}')" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Details</button>
             </div>
           </div>`;
-
+          const likeButton = Viewpet.querySelector('.like-btn')
+          likeButton.addEventListener('click',()=> {
+            LikedImages.push(pet.image)
+            displayLikedImages();
+        });
             petContainer.append(Viewpet);
         });
     }
