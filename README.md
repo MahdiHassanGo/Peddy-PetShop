@@ -10,3 +10,5 @@ It's a petshop where user can adopt and can see the details of the pets also the
 
 
 # Live Link :https://peddy-petshop.netlify.app/
+# MainPage
+### <img src="./MainPage.png"
