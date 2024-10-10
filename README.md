@@ -8,11 +8,5 @@ It's a petshop where user can adopt and can see the details of the pets also the
 ### Category for pets
 ### Loading spinner for better experience
 
-# # ES6 Features Used:
-### let and const Declarations
-### Template Literals
-### Default Parameters
-### async/await
-### forEach Method
 
 # Live Link :https://peddy-petshop.netlify.app/
