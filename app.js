@@ -1,4 +1,4 @@
-const loadCategories = () => 
+const categoriesLoader = () => 
     {
     fetch("https://openapi.programming-hero.com/api/peddy/pets")
       .then((res) => res.json())
@@ -8,11 +8,51 @@ const loadCategories = () =>
     })
       .catch((error) => console.log(error));
     };
+
+
+    let petsData = []; 
+    const sortByPrice = () => {
+      const sortedPets = petsData.sort((a, b) => {
+          const priceA = a.price ? parseFloat(a.price) : 0;
+          const priceB = b.price ? parseFloat(b.price) : 0;
+          return priceB - priceA; 
+      });
   
+      const petContainer = document.getElementById("pet-deals");
+      petContainer.innerHTML = '';
+  
+  
+      sortedPets.forEach(pet => {
+          const Viewpet = document.createElement("div");
+          Viewpet.innerHTML = `
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 ease-out min-w-full">
+              <img src="${pet.image}" alt="${pet.pet_name}" class="rounded-lg mb-4">
+              <h3 class="text-xl font-semibold mb-2 "> ${pet.pet_name|| "Not Available"}</h3>
+              <p class="text-gray-600 text-sm mb-2">Breed: ${pet.breed || "Not Available"}</p>
+              <p class="text-gray-600 text-sm mb-2">Birth: ${pet.date_of_birth || "Not Available"}</p>
+              <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender|| "Not Available"}</p>
+              <p class="text-gray-600 text-sm mb-2 price">Price: $${pet.price || "Not Available"}</p>
+              <div class="flex justify-around">
+                <button class="like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
+                <button onclick= "adoptPet('${pet.petId}', this)" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
+                <button onclick="loadDetails('${pet.petId}')" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Details</button>
+              </div>
+            </div>`;
+            const likeButton = Viewpet.querySelector('.like-btn')
+            likeButton.addEventListener('click',()=> {
+              LikedImages.push(pet.image)
+              displayLikedImages();
+          });
+          petContainer.appendChild(Viewpet);
+      });
+  };
+  
+  document.getElementById("sort-price-btn").addEventListener("click", sortByPrice);
   const displayPets = (pets) => 
     {
     const petContainer = document.getElementById("pet-deals");
     petContainer.innerHTML = "";
+    petsData = pets;
   
     if (!pets || pets.length === 0) 
     {
@@ -34,11 +74,11 @@ const loadCategories = () =>
         Viewpet.innerHTML = `
           <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 ease-out min-w-full">
             <img src="${pet.image}" alt="${pet.pet_name}" class="rounded-lg mb-4">
-            <h3 class="text-xl font-semibold mb-2 "> ${pet.pet_name}</h3>
+            <h3 class="text-xl font-semibold mb-2 "> ${pet.pet_name|| "Not Available"}</h3>
             <p class="text-gray-600 text-sm mb-2">Breed: ${pet.breed || "Not Available"}</p>
             <p class="text-gray-600 text-sm mb-2">Birth: ${pet.date_of_birth || "Not Available"}</p>
-            <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender}</p>
-            <p class="text-gray-600 text-sm mb-2">Price: $${pet.price || "Not Available"}</p>
+            <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender|| "Not Available"}</p>
+           <p class="text-gray-600 text-sm mb-2 price">Price: $${pet.price || "Not Available"}</p>
             <div class="flex justify-around">
               <button id="" class="like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
               <button onclick= "adoptPet('${pet.petId}', this)" class="text-Primary-Btn bg-gray-200 px-4 py-2 rounded-md">Adopt</button>
@@ -94,7 +134,7 @@ const displayDetails = (petData) => {
             <div class="grid grid-cols-2">
                 <p class="text-gray-600 text-sm mb-2">Breed: ${petData.breed || "Not Available"}</p>
                 <p class="text-gray-600 text-sm mb-2">Birth: ${petData.date_of_birth || "Not Available"}</p>
-                <p class="text-gray-600 text-sm mb-2">Gender: ${petData.gender}</p>
+                <p class="text-gray-600 text-sm mb-2">Gender: ${petData.gender|| "Not Available"}</p>
                 <p class="text-gray-600 text-sm mb-2">Price: ${petData.price || "Not Available"}</p>
                 <p class="text-gray-600 text-sm mb-2">Vaccinated status: ${petData.vaccinated_status || "Not Available"}</p>
             </div>
@@ -111,6 +151,8 @@ const displayDetails = (petData) => {
           </div>
     `
 }
+
+
 
 const adoptPet = (petId, button) => {
     
@@ -132,6 +174,9 @@ const adoptPet = (petId, button) => {
         
         if (countdown < 0) {
             clearInterval(interval);
+            button.classList.add('text-gray-200', 'bg-gray-600');   
+            button.setAttribute('disabled','true')
+            
             button.textContent = "Adopted"; 
             setTimeout(() => {
                 adoptModal.close();
@@ -140,19 +185,21 @@ const adoptPet = (petId, button) => {
     }, 1000);
 };
   
-  loadCategories();
+  categoriesLoader();
   const loadPetsByCategory = (category) => {
+   
     const apiUrl = `https://openapi.programming-hero.com/api/peddy/category/${category.toLowerCase()}`;
 
     fetch(apiUrl)
         .then((res) => res.json())
         .then((data) => {
-            showPetsByCategory(data.data);
+            ViewpetsByCategory(data.data);
         })
         .catch((error) => console.log(error));
 };
 
-const showPetsByCategory = (pets) => {
+const ViewpetsByCategory = (pets) => {
+  handleLoading(pets);
     const petContainer = document.getElementById("pet-deals");
     petContainer.innerHTML = "";
 
@@ -174,10 +221,10 @@ const showPetsByCategory = (pets) => {
             Viewpet.innerHTML = `
           <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 ease-out min-w-full">
             <img src="${pet.image}" alt="${pet.pet_name}" class="rounded-lg mb-4">
-            <h3 class="text-xl font-semibold mb-2 ">${pet.pet_name}</h3>
+            <h3 class="text-xl font-semibold mb-2 ">${pet.pet_name|| "Not Available"}</h3>
             <p class="text-gray-600 text-sm mb-2">Breed: ${pet.breed || "Not Available"}</p>
             <p class="text-gray-600 text-sm mb-2">Birth: ${pet.date_of_birth || "Not Available"}</p>
-            <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender}</p>
+            <p class="text-gray-600 text-sm mb-2">Gender: ${pet.gender|| "Not Available"}</p>
             <p class="text-gray-600 text-sm mb-2">Price: $${pet.price || "Not Available"}</p>
             <div class="flex justify-around">
               <button id="" class="like-btn bg-gray-200 px-4 py-2 rounded-md"><i class="fa-regular fa-thumbs-up"></i></button>
@@ -194,6 +241,19 @@ const showPetsByCategory = (pets) => {
         });
     }
 };
+
+const setActiveButton = (activeBtnId) => {
+  const buttons = document.querySelectorAll('.category-btn');
+  buttons.forEach((button) => {
+      if(button.id === activeBtnId)
+      {
+          button.classList.add('bg-Clicked-btn', 'text-black','rounded-full','border-Primary-Btn');
+      }
+      else{
+          button.classList.remove('bg-Clicked-btn', 'text-black','rounded-full','border-Primary-Btn');
+      }
+  });
+}
 const loadLikedPhotos =(image) =>
     {
       fetch(`https://openapi.programming-hero.com/api/peddy/${pets.image}`)
@@ -201,9 +261,49 @@ const loadLikedPhotos =(image) =>
         .then((data) => displayPets(data.pets))
         .catch((error) => console.log(error));
     }
+    const handleLoading = (pets) => {
+      const petContainer = document.getElementById("pet-deals");
+      const spinner = document.getElementById("spinner");
+      const likedPictureContainer = document.getElementById("Liked-Picture");
+      spinner.style.display = "flex";
+      petContainer.style.display = "none";
+      likedPictureContainer.style.display = "none"; 
+  
+      setTimeout(() => {
+         
+          if (!pets || pets.length === 0) {
+              petContainer.classList.remove("grid");
+              spinner.style.display = "none"; 
+              petContainer.style.display = "block"; 
+              likedPictureContainer.style.display = "grid"; 
+          } else {
 
-document.getElementById("dogs-btn").addEventListener("click", () => loadPetsByCategory("dog"));
-document.getElementById("cats-btn").addEventListener("click", () => loadPetsByCategory("cat"));
-document.getElementById("rabbits-btn").addEventListener("click", () => loadPetsByCategory("rabbit"));
-document.getElementById("birds-btn").addEventListener("click", () => loadPetsByCategory("bird"));
+              petContainer.classList.add("grid");
+              spinner.style.display = "none"; 
+              petContainer.style.display = "grid";
+              likedPictureContainer.style.display = "grid"; 
+          }
+      }, 2000);
+  };
+    
+  document.getElementById("dogs-btn").addEventListener("click", () => {
+    document.getElementById("spinner").style.display = "flex";
+    loadPetsByCategory("dog");
+    setActiveButton("dogs-btn");
+});
+document.getElementById("cats-btn").addEventListener("click", () => {
+    document.getElementById("spinner").style.display = "flex";
+    loadPetsByCategory("cat");
+    setActiveButton("cats-btn");
+});
+document.getElementById("rabbits-btn").addEventListener("click", () => {
+    document.getElementById("spinner").style.display = "flex";
+    loadPetsByCategory("rabbit");
+    setActiveButton("rabbits-btn");
+});
+document.getElementById("birds-btn").addEventListener("click", () => {
+    document.getElementById("spinner").style.display = "flex";
+    loadPetsByCategory("bird");
+    setActiveButton("birds-btn");
+});
 document.getElementById("Like-btn").addEventListener("click", () => loadLikedPhotos("Liked-Picture"));

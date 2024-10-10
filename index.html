@@ -14,6 +14,7 @@
     html{
       scroll-behavior: smooth;
     }
+
   </style>
   <script>
     tailwind.config = {
@@ -22,7 +23,8 @@
           colors: {
             clifford: '#da373d',
             'main-btn': 'rgb(171, 239, 95)',
-            'sec-btn': 'rgb(14, 122, 129)',
+            'Primary-Btn': 'rgb(14, 122, 129)',
+            'Clicked-btn': 'rgba(14, 122, 129, 0.1);',
             'footer': 'rgb(28,28,28)'
           }
         }
@@ -34,7 +36,7 @@
 </head>
 
 <body>
-  <header class="md:container mx-auto px-10">
+  <header class="md:container mx-auto px-10 ">
     <!-- Navbar -->
     <nav>
       <div class="navbar bg-base-100">
@@ -90,7 +92,7 @@
             </p>
 
             <div class="flex justify-center">
-              <a href="#Best-deals-Section" class=" btn bg-sec-btn text-white font-bold rounded-lg">View More</a>
+              <a href="#Best-deals-Section" class=" btn bg-Primary-Btn text-white font-bold rounded-lg">View More</a>
             </div>
             <div>
               <img src="images/pet.webp" alt="">
@@ -121,25 +123,26 @@
       <!-- category buttons  -->
       <div class="flex flex-col gap-2 lg:flex-row justify-around items-center space-x-1">
 
+
         <!-- Category button -->
-        <button id="dogs-btn" class="btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
+        <button id="dogs-btn" class="category-btn btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
           <img class="h-8" src="./images/dog1.svg" alt="">
           Dogs
         </button>
 
-        <button id="cats-btn" class="btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
+        <button id="cats-btn" class=" category-btn btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
          <img class="h-8" src="./images/cat 1.svg" alt="">
           Cats
         </button>
 
         <button id="rabbits-btn"
-          class="btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
+          class="category-btn btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
       <img class="h-8" src="./images/rabbit 1.svg" alt="">
           Rabbits
         </button>
 
         <button id="birds-btn"
-          class="btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
+          class="category-btn btn bg-gray-100  px-2 flex items-center max-w-30 lg:72 md:w-1/5 w-1/3">
        <img class="h-8"src="./images/parrot 1.svg" alt="">
           Birds
         </button>
@@ -152,11 +155,13 @@
    <section id="Best-deals-Section" class="container mx-auto px-4 py-10">
     <div class="flex flex-col lg:flex-row justify-between items-center mb-6">
       <h2 class="text-2xl font-bold mb-6 text-center">Best Deals For You</h2>
-      <button class="bg-sec-btn text-white px-4 py-2 rounded-md">Sort By Price</button>
+      <button id="sort-price-btn" class="bg-Primary-Btn text-white px-4 py-2 rounded-md">Sort By Price</button>
     </div>
-
+    <div id="spinner" class="hidden flex justify-center items-center mt-10">
+      <span class="loading loading-bars loading-md"></span>
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-
+     
       <!-- Cards grid   -->
       <div id="pet-deals" class="lg:col-span-3 grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -166,6 +171,7 @@
         <!-- Like photos -->
         <div id="Liked-Picture" class="bg-white rounded-lg shadow-lg p-6 w-full grid grid-cols-1 md:grid-cols-2 gap-6">
         </div>
+        <span class="loading loading-bars loading-md" style="display: none;"></span>
       </div>
 
     </div>
@@ -243,8 +249,7 @@
       </div>
     </div>
   </footer>
-
   <script src="app.js"></script>
-  <script src="pets.js"></script>
+
 </body>
 </html>
